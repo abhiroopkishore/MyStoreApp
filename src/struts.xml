@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+"-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+"http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+
+<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+<constant name="struts.devMode" value="true" />
+
+
+
+
+<package name="public" namespace="/" extends="struts-default">
+
+		<interceptors>
+			<interceptor class="com.mystore.interceptor.LoginInterceptor" name="loginInterceptor" />
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="loginInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+
+ 		<default-interceptor-ref name="loginStack"/>
+
+    <action name="loginAction" class="com.mystore.action.LoginAction">
+        <result name="success" type="redirectAction" >
+         	<param name="actionName">displayProductAction</param>
+            <param name="namespace">/store</param>
+         </result>
+        <result name="error">pages/loginError.jsp</result>
+    </action>
+		
+</package>
+	
+	
+	
+<package name="store" namespace="/store" extends="struts-default,json-default">
+		<result-types>
+			<result-type name="imageResult"	class="com.mystore.action.CustomImageBytesResult" />
+		</result-types>
+		
+		<interceptors>
+			<interceptor class="com.mystore.interceptor.LoginInterceptor" name="loginInterceptor" />
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="loginInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+ 		<default-interceptor-ref name="loginStack"/>
+ 		
+  	<global-results>
+		<result type="redirect" name="error">
+		  			<param name="location">/error.jsp</param>
+  					<param name="namespace">/</param>
+		</result>
+	</global-results>
+		
+	<global-exception-mappings>
+    	<exception-mapping exception = "java.lang.Exception" result = "error" />
+    	<exception-mapping exception = "java.lang.Error"  result = "error" />
+	</global-exception-mappings>
+
+
+
+		<action name="addProductAction" class="com.mystore.action.AddProductAction">
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">2097152</param>
+				<param name="allowedTypes">
+					image/png,image/gif,image/jpeg,image/pjpeg,image/jpg
+				</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="ADD_DATA" type="json"></result>
+		</action>
+				
+		<action name="displayProductAction" class="com.mystore.action.DisplayProductAction">
+			<result name="DISPLAY" >/pages/loginSuccessDisplay.jsp</result>
+		</action> 
+	
+
+		<action name="deleteProductAction" class="com.mystore.action.DeleteProductAction">
+			 <result name="DELETE_DATA" type="json"></result> 
+		</action>
+
+		<action name="updateProductAction" class="com.mystore.action.UpdateProductAction">
+			 <result name="UPDATE_DATA" type="json"></result> 
+		</action> 
+		
+		<action name="fetchGridDataAction" class="com.mystore.action.FetchGridDataAction">
+			<result name="FETCH_DATA" type="json"></result>
+		</action>
+
+		<action name="streamImageAction" class="com.mystore.action.StreamImageAction">
+			<result name="success" type="imageResult"></result>
+		</action>
+    		
+		<action class="com.mystore.action.LogoutAction" name="logoutAction">
+			<result name="logout" type="redirect">
+  					<param name="location">/index.jsp</param>
+  					<param name="namespace">/</param>
+			</result>
+		</action>
+
+</package>	
+
+
+
+</struts>
