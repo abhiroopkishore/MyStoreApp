@@ -28,7 +28,7 @@
 	
 	<div class="container">
  		<div class="col-lg-5">
-			<div class="text-center" style="margin-top: 14px;">Some Error Occurred :(. <a href="/MySToreApp/index.jsp">Go Back to Login page</a> </div>
+			<div class="text-center" style="margin-top: 14px;">Some Error Occurred :(. <a href="/MyStoreApp/index.jsp">Go Back to Login page</a> </div>
 			
 Error Name: <s:property value="exception"/><br><br>
 

@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mystore.dao.MyStoreDAO;
+import com.mystore.dto.Product;
 
 
 
@@ -19,7 +22,7 @@ import com.mystore.dao.MyStoreDAO;
 /**
  * Action class handles request to add products to list.
  */
-public class AddProductAction extends ActionSupport implements ServletRequestAware {
+public class AddProductAction extends ActionSupport implements ServletRequestAware, ModelDriven<Product> {
 
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(AddProductAction.class);
@@ -27,8 +30,8 @@ public class AddProductAction extends ActionSupport implements ServletRequestAwa
 	@Autowired
 	MyStoreDAO myStoreDAO;
 	
-	private String product_id, product_name, product_description,related_products_name;
-	private String msg;
+	private Product product = new Product();
+	
 
 	// Adding functionality for imageFileUpload
 	private File productImage;
@@ -51,29 +54,32 @@ public class AddProductAction extends ActionSupport implements ServletRequestAwa
 
 		try {
 
-			setProduct_id(String.valueOf(myStoreDAO.generateProductId()));
-			logger.info("Generated product ID: "+product_id);
+			product.setProduct_id(myStoreDAO.generateProductId());
+			logger.info("Generated product ID: "+product.getProduct_id());
+
 
 			// Creating new filename and storing file in context path
 			String filePath = servletRequest.getSession().getServletContext().getRealPath("/resource/saved_image/");
-			logger.debug("Server path:" + filePath);
-			String newFileName= product_id+"_"+product_name+"_"+this.productImageFileName;
+			logger.info("Server path:" + filePath);
+			String newFileName= product.getProduct_id()+"_"+product.getProduct_name()+"_"+this.productImageFileName;
 			File fileToCreate = new File(filePath, newFileName);
 			FileUtils.copyFile(this.productImage, fileToCreate);
+			logger.info("Details to be added in list -->"+product.getProduct_id()+","+ product.getProduct_name()+","+ product.getProduct_description()+","+product.getRelated_products_name()+","+ newFileName+".");
 
-			logger.debug("Details to be added in list -->"+product_id+","+ product_name+","+ product_description+","+related_products_name+","+ newFileName+".");
-
+			product.setProduct_image(fileToCreate);
+			product.setProduct_image_name(newFileName);
+			
 			// sending details to DAO service to add into list/DB
-			if(myStoreDAO.addProduct(Integer.parseInt(product_id), product_name, product_description,related_products_name,fileToCreate, newFileName)) {
+			if(myStoreDAO.addProduct(product)){
 				logger.info("Product added in backend... returning view");
-				msg="Your record is added";
+				product.setMsg("Your record is added");
 				return "ADD_DATA";
 			};
 
 
 		}catch(Exception e) {
 			logger.error("Exception occured in AddProductAction.execute() ", e);
-			msg="Some error occured while adding your record in the backend";
+			product.setMsg("Some error occured while adding your record in the backend");
 			return ERROR;
 		}
 		return ERROR;
@@ -87,59 +93,6 @@ public class AddProductAction extends ActionSupport implements ServletRequestAwa
 	
 // Getters/Setters for AddProduct form.	
 	
-	public String getProduct_id() {
-		return product_id;
-	}
-
-	public void setProduct_id(String product_id) {
-		this.product_id = product_id;
-	}
-
-	public String getProduct_name() {
-		return product_name;
-	}
-
-	public void setProduct_name(String product_name) {
-		this.product_name = product_name;
-	}
-
-	public String getProduct_description() {
-		return product_description;
-	}
-
-	public void setProduct_description(String product_description) {
-		this.product_description = product_description;
-	}
-
-		
-	public String getRelated_products_name() {
-		return related_products_name;
-	}
-
-	public void setRelated_products_name(String related_products_name) {
-		this.related_products_name = related_products_name;
-	}
-
-
-
-
-
-
-
-
-	public String getMsg() {
-		return msg;
-	}
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-
-
-
-
-
-
 
 
 	public File getProductImage() {
@@ -182,6 +135,33 @@ public class AddProductAction extends ActionSupport implements ServletRequestAwa
 		this.servletRequest = servletRequest;
 
 	}
+
+
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+
+
+
+
+
+	@Override
+	public Product getModel() {
+		return product;
+	}
+
+
+
+
+
+	
+	
 	
 	
 	

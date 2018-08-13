@@ -14,9 +14,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mystore.dao.MyStoreDAO;
+import com.mystore.dto.Product;
 import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
 
-public class UpdateProductAction extends ActionSupport implements ServletRequestAware  {
+public class UpdateProductAction extends ActionSupport implements ServletRequestAware, ModelDriven<Product> {
 
 	/**
 	 * 
@@ -27,10 +29,7 @@ public class UpdateProductAction extends ActionSupport implements ServletRequest
 	
 	@Autowired
 	MyStoreDAO myStoreDAO;
-	
-	private int product_id;
-	private String product_name, product_description,related_products_name;
-	private String msg;
+	private Product product = new Product();
 
 	// Adding functionality for imageFileUpload
 	private File productImage;
@@ -50,13 +49,13 @@ public class UpdateProductAction extends ActionSupport implements ServletRequest
 		myStoreDAO = (MyStoreDAO) context.getBean("myStoreDAO");
 		
 		
-//		setProduct_id(String.valueOf(myStoreDao.generateProductId()));
-		logger.info("new product id-->"+product_id);
+
+		logger.info("new product id-->"+product.getProduct_id());
 		try {
 		if(this.productImageFileName!=null) {
 		String filePath = servletRequest.getSession().getServletContext().getRealPath("/resource/saved_image/");
 		logger.info("Server path:" + filePath);
-		 fileToCreate = new File(filePath, product_id+"_"+product_name+"_"+this.productImageFileName);
+		 fileToCreate = new File(filePath, product.getProduct_id()+"_"+product.getProduct_name()+"_"+this.productImageFileName);
 		if(Files.deleteIfExists(fileToCreate.toPath())){
 			logger.info("File Deleted:" + fileToCreate.toPath());
 		}
@@ -69,71 +68,23 @@ public class UpdateProductAction extends ActionSupport implements ServletRequest
 		
 		
 		
-	logger.info("in action for updating -->"+product_id+","+ product_name+","+related_products_name+","+ product_description+","+ product_id+"_"+product_name+"_"+this.productImageFileName);
+	logger.info("in action for updating -->"+product.getProduct_id()+","+ product.getProduct_name()+","+product.getRelated_products_name()+","+ product.getProduct_description()+","+ product.getProduct_id()+"_"+product.getProduct_name()+"_"+this.productImageFileName);
 
 		
 		
 		
+		product.setProduct_image(fileToCreate);
+		product.setProduct_image_name(product.getProduct_id()+"_"+product.getProduct_name()+"_"+this.productImageFileName);
 		
-		
-		if(myStoreDAO.updateProduct(product_id, product_name, product_description,related_products_name,fileToCreate, product_id+"_"+product_name+"_"+this.productImageFileName)) {
-			logger.info("Product updated in backend... returning view");
-			msg="Your record is updated";
+//		if(myStoreDAO.updateProduct(product.getProduct_id(), product.getProduct_name(), product.getProduct_description(),product.getRelated_products_name(),fileToCreate, product.getProduct_id()+"_"+product.getProduct_name()+"_"+this.productImageFileName)) {
+	if(myStoreDAO.updateProduct(product)){
+		logger.info("Product updated in backend... returning view");
+		product.setMsg("Your record is updated");
 			return "UPDATE_DATA";
 		};
 		return ERROR;
 	}
 	
-	
-	
-	public int getProduct_id() {
-		return product_id;
-	}
-
-	public void setProduct_id(int product_id) {
-		this.product_id = product_id;
-	}
-
-	public String getProduct_name() {
-		return product_name;
-	}
-
-	public void setProduct_name(String product_name) {
-		this.product_name = product_name;
-	}
-
-	public String getProduct_description() {
-		return product_description;
-	}
-
-	public void setProduct_description(String product_description) {
-		this.product_description = product_description;
-	}
-	
-
-
-
-	public String getRelated_products_name() {
-		return related_products_name;
-	}
-
-
-
-	public void setRelated_products_name(String related_products_name) {
-		this.related_products_name = related_products_name;
-	}
-
-
-
-	public String getMsg() {
-		return msg;
-	}
-
-
-
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
 
 	
 	
@@ -179,5 +130,24 @@ public class UpdateProductAction extends ActionSupport implements ServletRequest
 
 	}
 	
-	
+
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+
+
+
+
+
+	@Override
+	public Product getModel() {
+		return product;
+	}
+
 }

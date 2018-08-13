@@ -3,11 +3,14 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<script src="../js/jquery-3.3.1.min.js" type="text/javascript" ></script> 
+<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
-<script src="../js/jquery-3.1.1.min.js" type="text/javascript" ></script> 
-<script type="text/javascript" src="../js/bootstrap.min.js"></script>
+
+
 <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
 
 
@@ -17,7 +20,6 @@
 //function to make ajax call, fetch product list and display in grid
 function display_grid(){
 jQuery(function($) {
-
 		$.ajax({			
 			dataType: "json",
 			enctype: 'multipart/form-data',
@@ -28,7 +30,6 @@ jQuery(function($) {
 			success: function(res){
 				var tblData="";
 				var recCount=0;
-
 				
 				$.each(res.productBeanList, function() {	
 					tblData += "<tr><td>" + this.product_id + "</td>" + 
@@ -50,7 +51,6 @@ jQuery(function($) {
 				 console.log("No records returned for display"); 
 			}
 		});
-
 }); }
 		
 		
@@ -70,7 +70,6 @@ jQuery(function($) {
 		      fd.append('product_name', $('#product_name').val());
 		      fd.append('product_description', $('#product_description').val()); 
 		      fd.append('related_products_name',$('#related_products_name').val());
-
 		      
 			$.ajax({
 				type:"POST",
@@ -97,9 +96,8 @@ jQuery(function($) {
 // function to make ajax call and add record to product list
 		function addNewRecord(){
 			var fd = new FormData();
-
 			jQuery(function($) {
- 			      var file = $('#productImage')[0].files[0];
+  			      var file = $('#productImage')[0].files[0];
 			      fd.append('productImage', file);
 			    //  fd.append('product_id', $('#product_id_add').val());
 			    fd.append('product_id','0');
@@ -155,8 +153,6 @@ jQuery(function($) {
 		});
 		}
  
-
-
 		//function for fecthing old information into the form
 		function fetchOldRecord(that){		
 			   $("#product_id").val($(that).parent().prev().prev().prev().prev().prev().text());
@@ -164,10 +160,8 @@ jQuery(function($) {
 			   $("#product_description").val($(that).parent().prev().prev().prev().text());
 			   $("#related_products_name").val($(that).parent().prev().prev().text());
 		   	}
-
 		//JQuery validations on forms below:
  function validateAddForm(){
-
 		 console.log('validateAddForm() called.');
 		 jQuery.validator.addMethod("alphanumeric", function(value, element) {
 			    return this.optional(element) || /^[\w.]+$/i.test(value);
@@ -289,7 +283,7 @@ Hello <b><%=session.getAttribute("loggedInUser")%></b>, you have been successful
 						
 						
 						<div class="form-group">
-							<input type="file" size="50" name="productImage_update" id="productImage_update" placeholder="Product Image" />
+							<input type="file" size="50" name="productImage" id="productImage_update" placeholder="Product Image" />
 						</div>
  
 						<button onclick="validateUpdateForm();" class="btn btn-info btn-block">Update</button>
@@ -321,16 +315,16 @@ Hello <b><%=session.getAttribute("loggedInUser")%></b>, you have been successful
 							</div> -->
 							<div class="col-xs-6 col-sm-6 col-md-6">
 								<div class="form-group">
-									<input type="text" name="product_name_add" id="product_name_add"  maxlength=30 class="form-control input-sm" placeholder="Product Name" >
+									<input type="text" name="product_name" id="product_name_add"  maxlength=30 class="form-control input-sm" placeholder="Product Name" >
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<input type="text" name="product_description_add" id="product_description_add" maxlength=30  class="form-control input-sm" placeholder="Product Description" >
+							<input type="text" name="product_description" id="product_description_add" maxlength=30  class="form-control input-sm" placeholder="Product Description" >
 						</div>
 						
 						<div class="form-group">
-							<input type="text" name="related_products_name_add" id="related_products_name_add" maxlength=60 class="form-control input-sm" placeholder="Add related products here" >
+							<input type="text" name="related_products_name" id="related_products_name_add" maxlength=60 class="form-control input-sm" placeholder="Add related products here" >
 						</div>
 						
 						<div class="form-group">

@@ -51,20 +51,20 @@ public class MyStoreDAOImpl implements MyStoreDAO{
 	
 	// adding product to synchronized list
 	@Override
-	public boolean addProduct(int product_id, String product_name, String product_description, String related_products_name, File product_image, String product_image_name) {
-
+//	public boolean addProduct(int product_id, String product_name, String product_description, String related_products_name, File product_image, String product_image_name) {
+	public boolean addProduct(Product product){
 		logger.info("Retreiving Product data from MyStoreDAO.addProduct() ..");
-		logger.info("Adding --> "+product_id+","+product_name+","+product_description+","+product_image.getAbsoluteFile());
+		logger.info("Adding --> "+product.getProduct_id()+","+product.getProduct_name()+","+product.getProduct_description()+","+product.getProduct_image().getAbsoluteFile());
 		CopyOnWriteArrayList<Product> productBeanList = splObj.getProdBeanList();
 		
 		try{
 
-			productBean.setProduct_id(product_id);
-			productBean.setProduct_name(product_name);
-			productBean.setProduct_description(product_description);
-			productBean.setProduct_image(product_image);
-			productBean.setRelated_products_name(related_products_name);
-			productBean.setProduct_image_name(product_image_name);
+			productBean.setProduct_id(product.getProduct_id());
+			productBean.setProduct_name(product.getProduct_name());
+			productBean.setProduct_description(product.getProduct_description());
+			productBean.setProduct_image(product.getProduct_image());
+			productBean.setRelated_products_name(product.getRelated_products_name());
+			productBean.setProduct_image_name(product.getProduct_image_name());
 			productBeanList.add(productBean);
 			
 		} catch(Exception e){
@@ -99,6 +99,8 @@ public class MyStoreDAOImpl implements MyStoreDAO{
 			logger.info("--> "+bean.getProduct_id() +" "+bean.getProduct_name()+" "+bean.getProduct_description());
 			if(bean.getProduct_id()==product_id){
 				productBeanList.remove(bean);
+				logger.info("Product record found in list and deleted.");
+				break;
 			}
 		}
 		}catch(Exception e){
@@ -112,25 +114,26 @@ public class MyStoreDAOImpl implements MyStoreDAO{
 	
 	// Update any product details into the list
 	@Override
-	public boolean updateProduct( int product_id, String product_name, String product_description,String related_products_name, File product_image, String product_image_name) {
+//	public boolean updateProduct( int product_id, String product_name, String product_description,String related_products_name, File product_image, String product_image_name) {
+	public boolean updateProduct(Product product){
 		logger.info("Updating Product data in MyStoreDAO.updateProduct() ..");
-		logger.debug("Updating --> "+product_id+","+product_name+","+product_description);
+		logger.debug("Updating --> "+product.getProduct_id()+","+product.getProduct_name()+","+product.getProduct_description());
 		CopyOnWriteArrayList<Product> productBeanList = splObj.getProdBeanList();
 		Product tempBean = new Product();
 		
 		try{
 			for(Product bean: productBeanList){
 			logger.info("--> "+bean.getProduct_id() +" "+bean.getProduct_name()+" "+bean.getProduct_description());
-			if(bean.getProduct_id()==product_id){
-				tempBean.setProduct_id(product_id);
-				tempBean.setProduct_name(product_name);
-				tempBean.setProduct_description(product_description);
-				tempBean.setRelated_products_name(related_products_name);
+			if(bean.getProduct_id()==product.getProduct_id()){
+				tempBean.setProduct_id(product.getProduct_id());
+				tempBean.setProduct_name(product.getProduct_name());
+				tempBean.setProduct_description(product.getProduct_description());
+				tempBean.setRelated_products_name(product.getRelated_products_name());
 				
-				if(product_image!=null) {
-					logger.info("product_image has value--> "+product_image_name);
-					tempBean.setProduct_image(product_image);
-					tempBean.setProduct_image_name(product_image_name);
+				if(product.getProduct_image()!=null) {
+					logger.info("product_image has value--> "+product.getProduct_image_name());
+					tempBean.setProduct_image(product.getProduct_image());
+					tempBean.setProduct_image_name(product.getProduct_image_name());
 				} else {
 					logger.info("product_image is null--> "+bean.getProduct_image_name());
 					tempBean.setProduct_image(bean.getProduct_image());

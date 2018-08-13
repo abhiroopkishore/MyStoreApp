@@ -11,7 +11,7 @@ public class Product {
 		private File product_image ;
 		private String product_image_name;
 		
-		
+		private String msg;
 		
 		
 		public String getProduct_image_name() {
@@ -63,6 +63,12 @@ public class Product {
 		
 		public Product() {
 			super();
+		}
+		public String getMsg() {
+			return msg;
+		}
+		public void setMsg(String msg) {
+			this.msg = msg;
 		}
 
 	

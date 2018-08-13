@@ -14,9 +14,44 @@
 
 		<interceptors>
 			<interceptor class="com.mystore.interceptor.LoginInterceptor" name="loginInterceptor" />
+			<interceptor-stack name="modelParamsPrepareParamsStack">
+    <interceptor-ref name="exception"/>
+    <interceptor-ref name="alias"/>
+    <interceptor-ref name="i18n"/>
+    <interceptor-ref name="checkbox"/>
+    <interceptor-ref name="multiselect"/>
+
+    <!-- NEW ModelDriven Position -->
+    <interceptor-ref name="modelDriven"/>
+
+    <interceptor-ref name="params">
+        <param name="excludeParams">^dojo\..*,^struts\..*,^session\..*,^request\..*,^application\..*,^servlet(Request|Response)\..*,^parameters\..*,^action:.*,^method:.*</param>
+    </interceptor-ref>
+    <interceptor-ref name="servletConfig"/>
+    <interceptor-ref name="prepare"/>
+    <interceptor-ref name="chain"/>
+
+    <!-- OLD ModelDriven Position -->
+    <!--interceptor-ref name="modelDriven"/-->
+
+    <interceptor-ref name="fileUpload"/>
+    <interceptor-ref name="staticParams"/>
+    <interceptor-ref name="actionMappingParams"/>
+    <interceptor-ref name="params">
+        <param name="excludeParams">^dojo\..*,^struts\..*,^session\..*,^request\..*,^application\..*,^servlet(Request|Response)\..*,^parameters\..*,^action:.*,^method:.*</param>
+    </interceptor-ref>
+    <interceptor-ref name="conversionError"/>
+    <interceptor-ref name="validation">
+        <param name="excludeMethods">input,back,cancel,browse</param>
+    </interceptor-ref>
+    <interceptor-ref name="workflow">
+        <param name="excludeMethods">input,back,cancel,browse</param>
+    </interceptor-ref>
+</interceptor-stack>
 			<interceptor-stack name="loginStack">
+				<interceptor-ref name="modelParamsPrepareParamsStack" />
 				<interceptor-ref name="loginInterceptor" />
-				<interceptor-ref name="defaultStack" />
+				
 			</interceptor-stack>
 		</interceptors>
 
@@ -41,9 +76,44 @@
 		
 		<interceptors>
 			<interceptor class="com.mystore.interceptor.LoginInterceptor" name="loginInterceptor" />
+<interceptor-stack name="modelParamsPrepareParamsStack">
+    <interceptor-ref name="exception"/>
+    <interceptor-ref name="alias"/>
+    <interceptor-ref name="i18n"/>
+    <interceptor-ref name="checkbox"/>
+    <interceptor-ref name="multiselect"/>
+
+    <!-- NEW ModelDriven Position -->
+    <interceptor-ref name="modelDriven"/>
+
+    <interceptor-ref name="params">
+        <param name="excludeParams">^dojo\..*,^struts\..*,^session\..*,^request\..*,^application\..*,^servlet(Request|Response)\..*,^parameters\..*,^action:.*,^method:.*</param>
+    </interceptor-ref>
+    <interceptor-ref name="servletConfig"/>
+    <interceptor-ref name="prepare"/>
+    <interceptor-ref name="chain"/>
+
+    <!-- OLD ModelDriven Position -->
+    <!--interceptor-ref name="modelDriven"/-->
+
+    <interceptor-ref name="fileUpload"/>
+    <interceptor-ref name="staticParams"/>
+    <interceptor-ref name="actionMappingParams"/>
+    <interceptor-ref name="params">
+        <param name="excludeParams">^dojo\..*,^struts\..*,^session\..*,^request\..*,^application\..*,^servlet(Request|Response)\..*,^parameters\..*,^action:.*,^method:.*</param>
+    </interceptor-ref>
+    <interceptor-ref name="conversionError"/>
+    <interceptor-ref name="validation">
+        <param name="excludeMethods">input,back,cancel,browse</param>
+    </interceptor-ref>
+    <interceptor-ref name="workflow">
+        <param name="excludeMethods">input,back,cancel,browse</param>
+    </interceptor-ref>
+</interceptor-stack>
 			<interceptor-stack name="loginStack">
+				<interceptor-ref name="modelParamsPrepareParamsStack" />
 				<interceptor-ref name="loginInterceptor" />
-				<interceptor-ref name="defaultStack" />
+				
 			</interceptor-stack>
 		</interceptors>
  		<default-interceptor-ref name="loginStack"/>
@@ -63,13 +133,14 @@
 
 
 		<action name="addProductAction" class="com.mystore.action.AddProductAction">
+		<interceptor-ref name="modelParamsPrepareParamsStack"></interceptor-ref>
 			<interceptor-ref name="fileUpload">
 				<param name="maximumSize">2097152</param>
 				<param name="allowedTypes">
 					image/png,image/gif,image/jpeg,image/pjpeg,image/jpg
 				</param>
 			</interceptor-ref>
-			<interceptor-ref name="defaultStack"></interceptor-ref>
+			  
 			<result name="ADD_DATA" type="json"></result>
 		</action>
 				
