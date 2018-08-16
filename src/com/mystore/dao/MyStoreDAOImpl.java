@@ -142,6 +142,9 @@ public class MyStoreDAOImpl implements MyStoreDAO{
 				
 				productBeanList.remove(bean);
 				productBeanList.add(tempBean);
+				
+				logger.info("Product record found in list and updated.");
+				break;
 			}
 		}
 		}catch(Exception e){
